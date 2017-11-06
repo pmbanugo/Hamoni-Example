@@ -3,7 +3,7 @@ A sample web app written in vanillaJS to show how to use [Hamoni](https://www.pr
 
 ![demo](https://github.com/pmbanugo/Hamoni-Example/blob/master/hamoni-sprint-1-demo.gif)
 
-Hamoni is currently being developed as a project for ProductHunt Hackathon. [Subscribe to get progress updates](https://www.producthunt.com/upcoming/hamoni)
+Hamoni is currently being developed as a project for ProductHunt Hackathon. [Subscribe for insiders update](https://www.producthunt.com/upcoming/hamoni)
 
 # How to setup and run the example
 This is a web app built HTML and jQuery. It allows you to chat with another user, with the assumption that you know the user's name and the other user also knows your name. The html page is served from an express server so you'll need to install this dependency. Run the following command to install the dependency and start the application server:
@@ -16,3 +16,78 @@ $ npm start
 Each application is identified by an applicationId which you will pass as an argument when initialising the Hamoni client. Open `index.js` located in `src/public` and change the value for the variable **appId** to a unique value to identify your application. Since Hamoni is currently being developed, I haven't much security to it. I'm focused on building an easy to use API and will add security later. In the future, it'll use either cookie or token based authentication to validate clients and each request they make to the server. So you can put any value you want there at the moment, open the application in the browser, and start chatting. 
 
 If a user is new to your application and wants to chat with another user who hasn't yet used the app, they should wait for the username/identity of the other user be collected and the client initialised. This means, after their username is collected, upon which it'll show a prompt requesting for the other user's name (friend name), they should wait for the other user to open the app and enter their username then get the same friend name prompt. Once this happens, they should enter the friend name and the connection will be initiated. For users who have user your application before, they don't need to go through this process again.
+
+# How to use Hamoni client
+Included in this repository is the Hamoni JS client located in `lib/hamoni.js`. The client allows your app to connect to the Hamoni server. To use it, copy and include this script in your web app. Once included, you will have access to a global `Hamoni` variable which you will initialise. To initiliase a new object, you'll need an applicationId and the identity of the user using the client. 
+
+```
+let hamoni = new Hamoni("APP_ID", "USER_IDENTITY"); //initialise Hamoni
+```
+
+In a real scenario, the indentity will be how you identify users in your applications. It could be a username or their email. The appId is a way for **Hamoni** server to identify your app and the client connecting upon which both uses to interact. In the near future, a more secured way will be used and probably it'll require token or cookie based authentication, but for now, the goal is build an easy to use API for use on the client first, then add security later (the project is being developed and I started work on it on November 2, 2017 to experiement with this idea and I'll be focusing on building the JS SDK and securing the server, before moving to development of Android and iOS SDK). 
+
+Upon initialisation, the client tries to connect with the server. This happens asynchronously. To know when it's done, you have to call `Hamoni.ready(callback)` with a function to execute when it succesfully connects. 
+
+```
+hamoni.ready(() => {
+    //Do whatever
+    //it's similar to jQuery.ready function. 
+});
+```
+
+## Getting list of users 
+When  the clent is connected, you can get a list of users in the application. You do this by calling `Hamoni.getUsers()`
+
+```
+hamoni.getUsers()//returns users in my application. e.g ["janet", "damian", "gombe"]
+```
+
+This returns an array containing the identity of the users in your application, except for the identity of the currently connected user. With this list, you can pick any user and establish a connection to chat with them. 
+
+## One-on-One chat
+To establish a One-on-One chat, you'll call `Hamoni.connectWithUser()` function. It takes it 3 arguments:
+
+1. The identity of the user to chat with. (You can get a list of users by calling `Hamoni.getusers()`).
+2. A function to call when successfully connected.
+3. A function to call when it fails to connect with that user.
+
+When it succesfully establishes a connection with that user, it calls the function passed as the second argument and passes it an object of type `UserToUserConnection`. This object contains methods to send and receive messages between the two users. See example below
+
+```
+hamoni.ready(() => {
+    hamoni.connectWithUser(friend, chatSetupCompleted, chatSetupFailed);
+});
+
+function chatSetupFailed() {
+    console.log('Chat Setup Failed. Contact Admin.');
+}
+
+function chatSetupCompleted(connection) {
+    userToUserConnection = connection; //an object that describes the connection betwwen the users
+    activateChatBox();
+}
+```
+
+The `UserToUserConnection` has two functions, `send()` and `onNewMessage()`. To send message to the othe user, you call `send("message to send") passing it the message to send to the other user (at the moment you can only send text messages. Later there'' be support for multimedia).
+
+```
+//send message
+userToUserConnection.send(message);
+```
+
+To get notified when messages arrive, you pass a function to execute for every new message to `onNewMessage()`. For every message received, it calls the passed in function with an object that contains the message and the user who sent it
+
+```
+function addMessage(data) {
+    let template = $("#new-message").html();
+    template = template.replace(
+        "{{body}}",
+        `<b>${data.user}:</b> ${data.message}`
+    );
+
+    $(".chat").append(template);
+}
+
+userToUserConnection.onNewMessage(addMessage); //function to execute when a new message arrives
+```
+
