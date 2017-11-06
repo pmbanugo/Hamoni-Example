@@ -1,7 +1,7 @@
 $(document).ready(function() {
   let username = null; //the identity of the user who logged in and wants to use the application
   let friend = null; //the identity of the person the logged in user wants to chat with
-  const appId = "12345"; //this is what identifies your application. For now you can use the email you subscribed with
+  const appId = "YOUR_APPID"; //this is what identifies your application. For now you can use the email you subscribed with
 
   while (!username) {
     getUserName();
