@@ -7,14 +7,14 @@ $(document).ready(function() {
     getUserName();
   }
 
-  while (!friend) {
-    getFriendName();
-  }
-
   let hamoni = new Hamoni(appId, username); //initialise Hamoni
   let userToUserConnection = null;
 
   hamoni.ready(() => {
+    while (!friend) {
+      getFriendName();
+    }
+
     hamoni.connectWithUser(friend, chatSetupCompleted, chatSetupFailed); //connectWithUser() establishes a connection with the person the logged in user wants to chat with. Parameters are: the identity of the other user, a function to execute when the connetion is successful, and a function to execute when the connection fails.
   });
 
