@@ -5,6 +5,10 @@ A sample web app written in vanillaJS to show how to use [Hamoni](https://www.pr
 
 Hamoni is currently being developed as a project for ProductHunt Hackathon. [Subscribe for insiders update](https://www.producthunt.com/upcoming/hamoni)
 
+[How to setup and run this example](https://github.com/pmbanugo/Hamoni-Example#how-to-setup-and-run-the-example)
+
+[How to use Hamoni JS client](https://github.com/pmbanugo/Hamoni-Example#how-to-use-hamoni-client)
+
 # How to setup and run the example
 This is a web app built HTML and jQuery. It allows you to chat with another user, with the assumption that you know the user's name and the other user also knows your name. The html page is served from an express server so you'll need to install this dependency. Run the following command to install the dependency and start the application server:
 
