@@ -39,7 +39,7 @@ hamoni.ready(() => {
 When  the clent is connected, you can get a list of users in the application. You do this by calling `Hamoni.getUsers()`
 
 ```
-hamoni.getUsers()//returns users in my application. e.g ["janet", "damian", "gombe"]
+let users = await hamoni.getUsers()// ["janet", "damian", "gombe"]
 ```
 
 This returns an array containing the identity of the users in your application, except for the identity of the currently connected user. With this list, you can pick any user and establish a connection to chat with them. 
@@ -89,5 +89,93 @@ function addMessage(data) {
 }
 
 userToUserConnection.onNewMessage(addMessage); //function to execute when a new message arrives
+```
+
+## Group chat
+You can also enable group conversation for your apps. Hamoni provides API to create or join groups. 
+
+### Create group
+To create group, you call `Hamoni.createGroup()` with the name for the group (unique across an application), display name, a success and failure callback. 
+
+```
+hamoni.createGroup(
+    { name: "plato", displayName: "It's plato's group" },
+    group => {
+        console.log("group created");
+
+        group.send("Hello Prahtiba");
+
+        group
+        .getMembers()
+        .then(members => console.log(members))
+        .catch(error => console.log(error));
+    },
+    reason =>
+        console.log("failed to create group. reason is") || console.log(reason)
+);
+```
+
+When it fails to create the group, it calls the failure callback with the reason it failed. If it was created, it calls the success callback with an object that represents the group, which you'll use to send and receive message for that group.
+
+### Join group
+To join a group, you need to know the name of the group. If you need to get a list of group name, you call `Hamoni.getGroups()`
+
+```
+let groups = await hamoni.getGroups();
+```
+
+Once you have the name of the group, you can use it to join a group.
+
+```
+  hamoni.joinGroup(
+    "plato",
+    group => {
+      console.log("group joined");
+      group.onNewMessage(
+        message => console.log(message)
+      );
+
+      group.send("hello new group");
+
+      group
+        .getMembers()
+        .then(members => console.log("members are: ") || console.log(members))
+        .catch(error => console.log("error occured") || console.log(error));
+    },
+    reason => console.log(reason)
+  );
+```
+
+`getGroups` takes 3 arguments
+
+- the name of the group
+- a success callback which will receive an object that can be used to send and receive message from the group.
+- a failure callback which get called when it couldn't add the client to a group.
+
+### Group class
+When you create or join a group, the success callback receives a **Group** object. It contains 4 functions
+
+1. **getMembers()** - This is used to retrieve the members in a group.
+
+```
+let members = await group.getMembers();
+```
+
+2. **send(message)** - Which is used to send message in the group.
+
+```
+group.send("Hello World");
+```
+
+3. **onNewMessage(callback)** - This is used to receive message sent to the group. It is passed a callback that gets called each time a new message arrives
+
+```
+group.onNewMessage(message => console.log(message));
+```
+
+4. **onNewMember(callback)** - This is used to get notified when a new member joins a group. 
+
+```
+group.onNewMember(member => console.log(`${member} joined the group`));
 ```
 
