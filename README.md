@@ -54,3 +54,7 @@ process again.
 For one-on-one chat, open `localhost:5000/index.html`
 
 For group chat, open `localhost:5000/group.html`
+
+TO access a hosted example, see
+[https://hamoni-chat.now.sh](https://hamoni-chat.now.sh) and
+[https://hamoni-chat.now.sh/group.html](https://hamoni-chat.now.sh/group.html)
