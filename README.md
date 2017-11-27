@@ -3,7 +3,13 @@
 A sample web app written in vanillaJS to show how to use
 [Hamoni](https://www.producthunt.com/upcoming/hamoni) in JavaScript
 
+### 1:1 chat
+
 ![demo](https://github.com/pmbanugo/Hamoni-Example/blob/master/hamoni-sprint-1-demo.gif)
+
+### Group chat
+
+![demo - group chat](https://github.com/pmbanugo/Hamoni-Example/blob/master/hamoni-sprint-3-demo.gif)
 
 Hamoni is currently being developed as a project for ProductHunt Hackathon.
 [Subscribe for insiders update](https://www.producthunt.com/upcoming/hamoni)
@@ -44,3 +50,7 @@ enter their username then get the same friend name prompt. Once this happens,
 they should enter the friend name and the connection will be initiated. For
 users who have user your application before, they don't need to go through this
 process again.
+
+For one-on-one chat, open `localhost:5000/index.html`
+
+For group chat, open `localhost:5000/group.html`
